@@ -1,5 +1,7 @@
 # Mock Integration Server
 
+[![Build](https://github.com/azheval/mockserver/actions/workflows/release.yml/badge.svg)](https://github.com/azheval/mockserver/actions/workflows/release.yml)
+
 Configurable HTTP and WebSocket mock server for testing external integrations with 1C and other systems. Routes and scenario behavior are declared outside Go source code.
 
 ## Quick start
