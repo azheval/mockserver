@@ -1,0 +1,20 @@
+route "ws-notifications" {
+  protocol: websocket
+  path: "/ws/notifications"
+  scenarios: ["notification-flow"]
+}
+
+scenario "notification-flow" {
+  priority: 10
+  when: {}
+  actions: [
+    ws_expect { text: "{\"type\":\"subscribe\"}" }
+    ws_send { json: { type: "connected", subscriptionId: "sub-001" } }
+    ws_send {
+      async: true
+      delay: "100ms"
+      json: { type: "notification", text: "Test notification" }
+    }
+    ws_close { code: 1000, reason: "Scenario completed" }
+  ]
+}

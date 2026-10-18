@@ -1,0 +1,46 @@
+openapi: 3.1.0
+info:
+  title: Example Orders API
+  version: 1.0.0
+paths:
+  /api/orders/{orderId}:
+    get:
+      operationId: getOrder
+      summary: Get an order by identifier
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+              example:
+                id: ORD-100
+                status: accepted
+                total: 125.5
+        '404':
+          description: Order not found
+          content:
+            application/problem+json:
+              example:
+                code: ORDER_NOT_FOUND
+                message: Order does not exist
+components:
+  schemas:
+    Order:
+      type: object
+      required: [id, status, total]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [accepted, processing, shipped]
+        total:
+          type: number

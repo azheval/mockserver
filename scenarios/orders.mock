@@ -1,0 +1,51 @@
+# HTTP route and scenarios for the order integration API.
+route "partner-api" {
+  protocol: http
+  path: "/api/v1/orders"
+  methods: [POST]
+  scenarios: ["order-created", "order-invalid"]
+}
+
+scenario "order-created" {
+  priority: 100
+  when: {
+    headers: {
+      "Content-Type": { regex: "(?i)application/json" }
+    }
+    json: {
+      "$.orderId": { exists: true }
+      "$.items": { type: array }
+    }
+  }
+  actions: [
+    respond {
+      status: 201
+      headers: { "Content-Type": "application/json" }
+      json: {
+        success: true
+        externalId: "EXT-1001"
+        internalId: "{{json.$.orderId}}"
+      }
+    }
+  ]
+}
+
+scenario "order-invalid" {
+  priority: 10
+  when: {
+    json: { "$.orderId": { exists: false } }
+  }
+  actions: [
+    respond {
+      status: 400
+      headers: { "Content-Type": "application/json" }
+      json: {
+        error: "INVALID_ORDER"
+        message: "orderId is required"
+      }
+    }
+  ]
+}
+
+# Alternative: route association can be declared on a scenario instead of
+# listing scenario IDs on the route. Both styles may be mixed.

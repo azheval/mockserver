@@ -1,0 +1,21 @@
+route "file-download" {
+  protocol: http
+  path: "/api/files/{fileId}"
+  methods: [GET]
+  scenarios: ["download-pdf"]
+}
+
+scenario "download-pdf" {
+  priority: 10
+  when: {}
+  actions: [
+    respond {
+      status: 200
+      headers: {
+        "Content-Type": "application/pdf"
+        "Content-Disposition": "attachment; filename=\"invoice.pdf\""
+      }
+      file: "files/invoice.pdf"
+    }
+  ]
+}
